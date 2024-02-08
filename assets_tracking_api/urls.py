@@ -18,7 +18,6 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('', views.index, name='home'),
     path('company/', views.CompanyView.as_view(), name='company_info'),
     path('company/<int:pk>', views.CompanyDetail.as_view(), name='company_detail'),
     path('company/employees/', views.EmployeeList.as_view(), name='employee_list'),
