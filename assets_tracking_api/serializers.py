@@ -16,16 +16,16 @@ class CompanySerializer(serializers.ModelSerializer):
 class EmployeeSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     company = CompanySerializer(read_only=True)
-    user_id = serializers.IntegerField(write_only=True)
     company_id = serializers.IntegerField(write_only=True)
+    user_id = serializers.IntegerField(write_only=True)
     class Meta:
         model = Employee
-        fields = ['id', 'address', 'designation', 'company', 'user', 'user_id', 'company_id']
+        fields = ['id', 'address', 'designation', 'company', 'user', 'company_id', 'user_id']
         
 
 class DeviceSerializer(serializers.ModelSerializer):
     company = CompanySerializer(read_only=True)
-    # current_employee = EmployeeSerializer(read_only=True)
+    current_employee = EmployeeSerializer(read_only=True)
     company_id = serializers.IntegerField(write_only=True)
     employee_id = serializers.IntegerField(write_only=True)
     class Meta:
