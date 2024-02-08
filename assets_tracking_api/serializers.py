@@ -25,12 +25,12 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
 class DeviceSerializer(serializers.ModelSerializer):
     company = CompanySerializer(read_only=True)
-    current_employee = EmployeeSerializer(read_only=True)
+    # current_employee = EmployeeSerializer(read_only=True)
     company_id = serializers.IntegerField(write_only=True)
-    # employee_id = serializers.IntegerField(write_only=True)
+    employee_id = serializers.IntegerField(write_only=True)
     class Meta:
         model = Device
-        fields = ['id', 'device_name', 'company', 'current_employee', 'company_id']
+        fields = ['id', 'device_name', 'company', 'current_employee', 'company_id', 'employee_id']
         
         
 class DeviceLogSerializer(serializers.ModelSerializer):
