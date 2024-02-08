@@ -214,10 +214,22 @@ class DeviceList(generics.ListCreateAPIView):
     
     def post(self, request):
         if IsManager().has_permission(request, self):
-            serializer = DeviceSerializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(serializer.data)
+            device_name = request.data.get('device_name')
+            employee_id = request.data.get('employee_id')
+            user_id = request.user.id
+            
+            requested_employee = get_object_or_404(Employee, id=user_id)
+            company_id = requested_employee.company_id
+            c_employee = get_object_or_404(Employee, id=employee_id)
+            
+            device_data = {
+                "device_name": device_name,
+                "company_id": company_id,
+                "current_employee": c_employee
+            }
+            device = Device.objects.create(**device_data)
+            serializer = self.serializer_class(device)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response({"message": "You are not authorized"}, status=status.HTTP_403_FORBIDDEN)
 
@@ -278,5 +290,43 @@ class DeviceDetail(generics.RetrieveUpdateDestroyAPIView):
                 device.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
             return Response({"message": "You are not authorized"}, status=status.HTTP_403_FORBIDDEN)
+        else:
+            return Response({"message": "You are not authorized"}, status=status.HTTP_403_FORBIDDEN)
+    
+class DeviceLogList(generics.ListCreateAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = DeviceLog.objects.all()
+    serializer_class = DeviceLogSerializer
+    
+    def post(self,request,  *args, **kwargs):
+        if IsManager().has_permission(request, self):
+            return super().post(request, *args, **kwargs)
+        else:
+            return Response({"message": "You are not authorized"}, status=status.HTTP_403_FORBIDDEN)
+        
+
+
+class DeviceLogDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsAuthenticated]
+    queryset = DeviceLog.objects.all()
+    serializer_class = DeviceLogSerializer
+    
+    def put(self,request,  *args, **kwargs):
+        pk = kwargs['pk']
+        if IsManager().has_permission(request, self):
+            device_log=get_object_or_404(DeviceLog, id=pk)
+            serializer = self.serializer_class(device_log, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response({"message": "You are not authorized"}, status=status.HTTP_403_FORBIDDEN)
+        
+    def delete(self, request,  *args, **kwargs):
+        pk = kwargs['pk']
+        if IsManager().has_permission(request, self):
+            device_log=get_object_or_404(DeviceLog, id=pk)
+            device_log.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response({"message": "You are not authorized"}, status=status.HTTP_403_FORBIDDEN)

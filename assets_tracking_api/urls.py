@@ -24,6 +24,8 @@ urlpatterns = [
     path('company/employees/<int:pk>/', views.EmployeeDetail.as_view(), name='employee_detail'),
     path('company/devices/', views.DeviceList.as_view(), name='device_list'),
     path('company/devices/<int:pk>/', views.DeviceDetail.as_view(), name='device_detail'),
+    path('company/devices-log/', views.DeviceLogList.as_view(), name='device_log_list'),
+    path('company/devices-log/<int:pk>/', views.DeviceLogDetail.as_view(), name='device_log_detail'),
     path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
